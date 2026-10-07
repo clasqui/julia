@@ -1154,6 +1154,7 @@ JL_DLLEXPORT jl_task_t *jl_new_task(jl_value_t *start, jl_value_t *completion_fu
     // Last, since it can allocate (and thus run GC): `t` must be fully
     // initialized before this call.
     jl_timing_task_init(t);
+    JL_PROBE_RT_NEW_TASK_COMPLETED(ct, t);
     return t;
 }
 

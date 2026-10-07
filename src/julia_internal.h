@@ -2358,6 +2358,10 @@ JL_DLLIMPORT void jl_jit_unregister_ci(jl_code_instance_t *ci) JL_NOTSAFEPOINT;
   jl_nvtx_task_new_range_push(child); \
 } while (0)
 
+#define JL_PROBE_RT_NEW_TASK_COMPLETED(parent, child) do { \
+  jl_nvtx_task_range_pop(); \
+} while (0)
+
 #define JL_PROBE_RT_START_TASK(task) do { \
   jl_nvtx_task_range_push(task); \
 } while (0)
@@ -2396,6 +2400,7 @@ JL_DLLIMPORT void jl_jit_unregister_ci(jl_code_instance_t *ci) JL_NOTSAFEPOINT;
 #define JL_PROBE_RT_RUN_TASK_ENABLED() (1)
 #define JL_PROBE_RT_PAUSE_TASK_ENABLED() (1)
 #define JL_PROBE_RT_NEW_TASK_ENABLED() (1)
+#define JL_PROBE_RT_NEW_TASK_COMPLETED_ENABLED() (1)
 #define JL_PROBE_RT_START_TASK_ENABLED() (1)
 #define JL_PROBE_RT_FINISH_TASK_ENABLED() (1)
 #define JL_PROBE_RT_START_PROCESS_EVENTS_ENABLED() (0)
