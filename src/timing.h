@@ -4,6 +4,7 @@
 #define JL_TIMING_H
 
 #include "julia.h"
+#include "rle.h"
 
 static inline const char *gnu_basename(const char *path)
 {
@@ -126,7 +127,13 @@ typedef struct ___tracy_source_location_data TracySrcLocData;
 #ifdef USE_NVTX
 #pragma GCC visibility push(default)
 #include <nvtx3/nvToolsExt.h>
+#include <nvtx3/nvToolsExtPayload.h>
+#include <nvtx3/nvToolsExtPayloadHelper.h>
 #pragma GCC visibility pop
+uint32_t jl_timing_next_task_id(void) JL_NOTSAFEPOINT;
+void jl_nvtx_task_range_push(jl_task_t *task) JL_NOTSAFEPOINT;
+void jl_nvtx_task_range_pop(void) JL_NOTSAFEPOINT;
+void jl_nvtx_task_new_range_push(jl_task_t *task) JL_NOTSAFEPOINT;
 #endif
 
 #ifdef __cplusplus
@@ -135,6 +142,7 @@ extern "C" {
 void jl_print_timings(void);
 
 void jl_timing_task_init(jl_task_t *t);
+void jl_timing_root_task_init(jl_task_t *t);
 void jl_timing_block_task_enter(jl_task_t *ct, jl_ptls_t ptls, jl_timing_block_t *prev_blk);
 jl_timing_block_t *jl_timing_block_task_exit(jl_task_t *ct, jl_ptls_t ptls);
 jl_timing_block_t *jl_timing_block_pop(jl_timing_block_t *cur_block);

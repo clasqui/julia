@@ -1075,6 +1075,9 @@ JL_DLLEXPORT jl_task_t *jl_new_task(jl_value_t *start, jl_value_t *completion_fu
     jl_task_t *ct = jl_current_task;
     jl_task_t *t = (jl_task_t*)jl_gc_alloc(ct->ptls, sizeof(jl_task_t), jl_task_type);
     jl_set_typetagof(t, jl_task_tag, 0);
+#if defined(USE_NVTX)
+    t->nvtx_task_id = jl_timing_next_task_id();
+#endif
     JL_PROBE_RT_NEW_TASK(ct, t);
     t->ctx.copy_stack = 0;
     if (ssize == 0) {
@@ -1575,6 +1578,11 @@ jl_task_t *jl_init_root_task(jl_ptls_t ptls, void *stack_lo, void *stack_hi)
     strcpy(unique_string, "Root");
     ct->name = unique_string;
 #endif
+
+#ifdef USE_NVTX
+    jl_timing_root_task_init(ct);
+#endif
+
     ct->ctx.started = 1;
     ct->next = jl_nothing;
     ct->queue = jl_nothing;

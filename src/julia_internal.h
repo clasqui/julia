@@ -2344,6 +2344,71 @@ JL_DLLIMPORT void jl_jit_unregister_ci(jl_code_instance_t *ci) JL_NOTSAFEPOINT;
 //    if (JL_PROBE_GC_STOP_THE_WORLD_ENABLED())
 //        JL_PROBE_GC_STOP_THE_WORLD();
 
+#elif defined(USE_NVTX)
+
+#define JL_PROBE_RT_RUN_TASK(task) do { \
+  jl_nvtx_task_range_push(task); \
+} while (0)
+
+#define JL_PROBE_RT_PAUSE_TASK(task) do { \
+  jl_nvtx_task_range_pop(); \
+} while (0)
+
+#define JL_PROBE_RT_NEW_TASK(parent, child) do { \
+  jl_nvtx_task_new_range_push(child); \
+} while (0)
+
+#define JL_PROBE_RT_START_TASK(task) do { \
+  jl_nvtx_task_range_push(task); \
+} while (0)
+
+#define JL_PROBE_RT_FINISH_TASK(task) do { \
+  jl_nvtx_task_range_pop(); \
+} while (0)
+
+#define JL_PROBE_GC_BEGIN(collection) do ; while (0)
+#define JL_PROBE_GC_STOP_THE_WORLD() do ; while (0)
+#define JL_PROBE_GC_MARK_BEGIN() do ; while (0)
+#define JL_PROBE_GC_MARK_END(scanned_bytes, perm_scanned_bytes) do ; while (0)
+#define JL_PROBE_GC_SWEEP_BEGIN(full) do ; while (0)
+#define JL_PROBE_GC_SWEEP_END() do ; while (0)
+#define JL_PROBE_GC_END() do ; while (0)
+#define JL_PROBE_GC_FINALIZER() do ; while (0)
+#define JL_PROBE_RT_START_PROCESS_EVENTS(task) do ; while (0)
+#define JL_PROBE_RT_FINISH_PROCESS_EVENTS(task) do ; while (0)
+#define JL_PROBE_RT_TASKQ_INSERT(ptls, task) do ; while (0)
+#define JL_PROBE_RT_TASKQ_GET(ptls, task) do ; while (0)
+#define JL_PROBE_RT_SLEEP_CHECK_WAKE(other, old_state) do ; while (0)
+#define JL_PROBE_RT_SLEEP_CHECK_WAKEUP(ptls) do ; while (0)
+#define JL_PROBE_RT_SLEEP_CHECK_SLEEP(ptls) do ; while (0)
+#define JL_PROBE_RT_SLEEP_CHECK_TASKQ_WAKE(ptls) do ; while (0)
+#define JL_PROBE_RT_SLEEP_CHECK_TASK_WAKE(ptls) do ; while (0)
+#define JL_PROBE_RT_SLEEP_CHECK_UV_WAKE(ptls) do ; while (0)
+
+#define JL_PROBE_GC_BEGIN_ENABLED() (0)
+#define JL_PROBE_GC_STOP_THE_WORLD_ENABLED() (0)
+#define JL_PROBE_GC_MARK_BEGIN_ENABLED() (0)
+#define JL_PROBE_GC_MARK_END_ENABLED() (0)
+#define JL_PROBE_GC_SWEEP_BEGIN_ENABLED() (0)
+#define JL_PROBE_GC_SWEEP_END_ENABLED()  (0)
+#define JL_PROBE_GC_END_ENABLED() (0)
+#define JL_PROBE_GC_FINALIZER_ENABLED() (0)
+#define JL_PROBE_RT_RUN_TASK_ENABLED() (1)
+#define JL_PROBE_RT_PAUSE_TASK_ENABLED() (1)
+#define JL_PROBE_RT_NEW_TASK_ENABLED() (1)
+#define JL_PROBE_RT_START_TASK_ENABLED() (1)
+#define JL_PROBE_RT_FINISH_TASK_ENABLED() (1)
+#define JL_PROBE_RT_START_PROCESS_EVENTS_ENABLED() (0)
+#define JL_PROBE_RT_FINISH_PROCESS_EVENTS_ENABLED() (0)
+#define JL_PROBE_RT_TASKQ_INSERT_ENABLED() (0)
+#define JL_PROBE_RT_TASKQ_GET_ENABLED() (0)
+#define JL_PROBE_RT_SLEEP_CHECK_WAKE_ENABLED() (0)
+#define JL_PROBE_RT_SLEEP_CHECK_WAKEUP_ENABLED() (0)
+#define JL_PROBE_RT_SLEEP_CHECK_SLEEP_ENABLED() (0)
+#define JL_PROBE_RT_SLEEP_CHECK_TASKQ_WAKE_ENABLED() (0)
+#define JL_PROBE_RT_SLEEP_CHECK_TASK_WAKE_ENABLED() (0)
+#define JL_PROBE_RT_SLEEP_CHECK_UV_WAKE_ENABLED() (0)
+
 #else
 // define a dummy version of the probe functions
 #define JL_PROBE_GC_BEGIN(collection) do ; while (0)
